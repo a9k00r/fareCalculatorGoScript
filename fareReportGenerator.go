@@ -49,6 +49,9 @@ func readCsvFile(reader *csv.Reader, tupleBatch chan datamodel.TupleBatch) {
 	for {
 		record, err := reader.Read()
 		if err == io.EOF {
+			if id != -1 {
+				tupleBatch <- dataBatch
+			}
 			break
 		} else if err != nil {
 			log.Fatal(err)

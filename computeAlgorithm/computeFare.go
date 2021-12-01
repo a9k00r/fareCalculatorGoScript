@@ -9,6 +9,8 @@ import (
 	"time"
 )
 
+var loc *time.Location = getLocation()
+
 func CalculateRideFare(tupleBatch datamodel.TupleBatch) datamodel.RideReport {
 	lastValidPosition := tupleBatch.Positions[0]
 	RemoveIndex(tupleBatch.Positions, 0)
@@ -38,12 +40,16 @@ func calculateSegment(start datamodel.Position, stop datamodel.Position) datamod
 }
 
 func getLocalMinutesOfDay(timestamp int64) int64 {
+	unixTimeUTC := time.Unix(timestamp, 0).In(loc)
+	return int64(unixTimeUTC.Hour()*60 + unixTimeUTC.Minute())
+}
+
+func getLocation() *time.Location {
 	loc, err := time.LoadLocation(constants.ZoneId)
 	if err != nil {
 		log.Fatalf("unable to load location from timezone %s", err)
 	}
-	unixTimeUTC := time.Unix(timestamp, 0).In(loc)
-	return int64(unixTimeUTC.Hour()*60 + unixTimeUTC.Minute())
+	return loc
 }
 
 func RemoveIndex(s []datamodel.Position, index int) []datamodel.Position {
