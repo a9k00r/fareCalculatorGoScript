@@ -1,4 +1,4 @@
-## Beat Ride Fare Calculator
+
 
 ## Setup
 
